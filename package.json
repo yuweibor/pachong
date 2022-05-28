@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node index"
   },
   "repository": {
     "type": "git",
@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/yuweibor/pachong/issues"
   },
-  "homepage": "https://github.com/yuweibor/pachong#readme"
+  "homepage": "https://github.com/yuweibor/pachong#readme",
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.11"
+  }
 }
