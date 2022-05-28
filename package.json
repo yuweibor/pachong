@@ -1,0 +1,19 @@
+{
+  "name": "pachong",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yuweibor/pachong.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/yuweibor/pachong/issues"
+  },
+  "homepage": "https://github.com/yuweibor/pachong#readme"
+}
