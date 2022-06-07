@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/yuweibor/pachong#readme",
   "dependencies": {
-    "cheerio": "^1.0.0-rc.11"
+    "cheerio": "^1.0.0-rc.11",
+    "moment": "^2.29.3"
   }
 }
