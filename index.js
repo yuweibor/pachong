@@ -22,7 +22,7 @@ const run = (address, keys, level, fileName, days) => {
   let hrefArr = [];
   let count = 0;
   let _level = level;
-  let buffer = 50;
+  let buffer = 5;
 
   const runner = async (_address, originUrl) => {
     while (buffer < 0) {
@@ -30,6 +30,7 @@ const run = (address, keys, level, fileName, days) => {
     }
     buffer--;
     if (_level <= 0) return;
+    _level--;
     if (_address.indexOf('/') < 0) return;
     let url = new URL(_address, originUrl);
     if (!url) return;
@@ -42,8 +43,7 @@ const run = (address, keys, level, fileName, days) => {
         html += chunk;
       })
       res.on("end", () => {
-        buffer++;
-        _level--;
+
         const inDayRange = dayRange.filter(s => {
           return html.indexOf(s) > -1
         })
@@ -52,7 +52,7 @@ const run = (address, keys, level, fileName, days) => {
         })
         if (hasKey.length && inDayRange.length) {
           fs.appendFileSync(fileName,
-            `-----网址:${ url.origin }${ _address }-----\n
+            `-----网址:${ url.origin }${ _address }\n
                --关键词:${ hasKey.join("、") }--\n
                --日期:${ inDayRange.join("、") }--\n
                --第${ _level }层检索\n
@@ -74,6 +74,8 @@ const run = (address, keys, level, fileName, days) => {
       console.log('err', e.message, e.name)
       fs.appendFileSync("error.txt", `error--${ url.href }  ${ url.origin }\n${ e.message }\n`)
       return;
+    }).on("finish", () => {
+      buffer++;
     })
   }
   runner(address);
