@@ -1,4 +1,9 @@
 'use strict';
+const readline = require('readline');
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout
+});
 const fs = require('fs');
 const { get } = require("axios");
 const cheerio = require('cheerio');
@@ -12,28 +17,28 @@ const getDayRange = days => {
   return dayRange;
 }
 
-const run = (address, keys, fileName, days) => {
+const run = (address, keys, fileName, days, buffer) => {
   //清理旧文件
   if (fileName) fs.rm(fileName, () => { })
   fs.rm("error.txt", () => { })
   const dayRange = getDayRange(days);
   let hrefArr = [];
-  let lock = false;
   let count = 0;
   const runner = async (_address, originUrl) => {
     _address = _address.trim();
     if (_address.indexOf('/') < 0) return;
     let url = new URL(_address, originUrl);
     if (!url) return;
-    if (lock) {
+    if (buffer < 0) {
       await new Promise(e => setTimeout(e, 50));
       runner(_address, originUrl);
       return;
     }
-    lock = true;
+    buffer--;
     get(url.href).then((res) => {
       count++;
       let html = res.data;
+      if (typeof html !== 'string') return;
       const inDayRange = dayRange.filter(s => {
         return html.indexOf(s) > -1
       })
@@ -58,13 +63,32 @@ const run = (address, keys, fileName, days) => {
 
       })
     }).catch(e => {
-      lock = false;
       console.log('err', e.message, e.name)
       fs.appendFileSync("error.txt", `error--${ url.href }  ${ url.origin }\n${ e.message }\n ${ url.protocol }\n`)
       return;
-    }).finally(() => { lock = false; console.log(count) })
+    }).finally(() => { buffer++; console.log(count, buffer) })
   }
   runner(address);
 }
-//网址 /关键词/文件名/最近多少天
-run("http://www.gov.cn", [ "水泥", "错峰生产", "环保督察", "产能过剩", "转型升级", "技改", "绿色建材产业园", "绿色工厂", "智能制造" ], "a.txt", 7)
+
+
+const init = () => {
+  let buffer = null;
+  let days = null;
+
+  rl.question('buffer?', e1 => {
+    buffer = e1;
+    rl.question('how many days?', e2 => {
+      days = e2;
+      rl.close();
+      //网址 /关键词/文件名/最近多少天/buffer
+      run("http://www.gov.cn", [ "水泥", "错峰生产", "环保督察", "产能过剩", "转型升级", "技改", "绿色建材产业园", "绿色工厂", "智能制造" ], "a.txt", days, buffer)
+
+    });
+
+  });
+
+
+
+}
+init();
