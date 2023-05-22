@@ -19,6 +19,7 @@
   "dependencies": {
     "axios": "^0.27.2",
     "cheerio": "^1.0.0-rc.11",
+    "crawler": "^1.4.0",
     "moment": "^2.29.3"
   }
 }
