@@ -81,13 +81,14 @@ const run = (url, keys, fileName, days) => {
           const href = $(this).attr("href");
           if (
             typeof href === "string" &&
-            (!href.includes("/") || href.includes("english"))
+            (!href.includes("/") || href.includes("english") || href.includes("big5"))
           ) {
             return;
           }
           const absUrl = new URL(href, url).href;
-          
-          runner(absUrl);
+          let x = Object.assign(runner);
+          x(absUrl);
+          x = null;
         });
       })
       .catch((e) => {
