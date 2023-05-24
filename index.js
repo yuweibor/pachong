@@ -9,7 +9,6 @@ const fs = require("fs");
 const cheerio = require("cheerio");
 const moment = require("moment");
 const { log } = require("console");
-
 const getDayRange = (days) => {
   const dayRange = [];
   for (let i = 0; i < days; i++) {
@@ -22,8 +21,9 @@ const getDayRange = (days) => {
 let visitedUrl = new Set();
 
 var crawl = new Crawler({
-  rateLimit: 100,
+  rateLimit: 0,
   maxConnections: 10,
+  timeout:4000,
 });
 
 const axios = (url) => new Promise((r, j) => {
@@ -44,18 +44,20 @@ const axios = (url) => new Promise((r, j) => {
 });
 
 const run = (url, keys, fileName, days) => {
+  let resultCount = 0;
+  let count = 0;
   //清理旧文件
   if (fileName) fs.rm(fileName, () => {});
   fs.rm("error.txt", () => {});
   fs.rm("url.txt", () => {});
   const dayRange = getDayRange(days);
   const runner = async (url) => {
-    if (typeof url === "string" && visitedUrl.has(url)) {
+    if (typeof url === "string" && (visitedUrl.has(url.split('//')[1]) || url.substring(url.length-4,url.length)==='.pdf')) {
       return;
     }
     fs.appendFileSync("url.txt", `${url}\n`);
-    visitedUrl.add(url);
-    log(url);
+    visitedUrl.add(url.split('//')[1]);
+    log(++count, url);
     axios(url)
       .then((html) => {
         if (typeof html !== "string") return;
@@ -68,7 +70,7 @@ const run = (url, keys, fileName, days) => {
         if (hasKey.length && inDayRange.length) {
           fs.appendFileSync(
             fileName,
-            `\n-----网址: ${url}\n
+            `\n${++resultCount}-----网址: ${url}\n
                --关键词:${hasKey.join("、")}--\n
                --日期:${inDayRange.join("、")}--\n
           `

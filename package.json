@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node index --max-old-space-size=4096"
+    "start": "node index --max-old-space-size=40960"
   },
   "repository": {
     "type": "git",
