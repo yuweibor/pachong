@@ -20,22 +20,31 @@ const getDayRange = (days) => {
 
 let visitedUrl = new Set();
 
-var crawl = new Crawler({
+const crawl = new Crawler({
   rateLimit: 0,
   maxConnections: 10,
-  timeout:4000,
+  timeout: 4000,
 });
+
+const catchError = e => {
+  console.log("err", e.message, e.name);
+  fs.appendFileSync(
+    "error.txt",
+    `error--${url}\n${e.message}\n ${url.protocol}\n`
+  );
+  return;
+}
 
 const axios = (url) => new Promise((r, j) => {
   crawl.queue([
     {
       uri: url,
-      jQuery: false,
+      jQuery: true,
       callback: (err, res, done) => {
         if (err) {
           j(err);
         } else {
-          r(res.body);
+          r(res);
         }
         done();
       },
@@ -47,19 +56,21 @@ const run = (url, keys, fileName, days) => {
   let resultCount = 0;
   let count = 0;
   //清理旧文件
-  if (fileName) fs.rm(fileName, () => {});
-  fs.rm("error.txt", () => {});
-  fs.rm("url.txt", () => {});
+  if (fileName) fs.rm(fileName, () => { });
+  fs.rm("error.txt", () => { });
+  fs.rm("url.txt", () => { });
   const dayRange = getDayRange(days);
   const runner = async (url) => {
-    if (typeof url === "string" && (visitedUrl.has(url.split('//')[1]) || url.substring(url.length-4,url.length)==='.pdf')) {
+    if (typeof url === "string" && (visitedUrl.has(url.split('//')[1]) || url.substring(url.length - 4, url.length) === '.pdf')) {
       return;
     }
     fs.appendFileSync("url.txt", `${url}\n`);
     visitedUrl.add(url.split('//')[1]);
     log(++count, url);
+
     axios(url)
-      .then((html) => {
+      .then(({ body, $ }) => {
+        const html = body;
         if (typeof html !== "string") return;
         const inDayRange = dayRange.filter((s) => {
           return html.includes(s);
@@ -76,29 +87,28 @@ const run = (url, keys, fileName, days) => {
           `
           );
         }
-        const $ = cheerio.load(html);
         $("a").each(async function () {
           const href = $(this).attr("href");
+
+          let absUrl;
+          try {
+            absUrl = new URL(href, url).href;
+          } catch (e) { catchError(e) }
           if (
-            typeof href === "string" &&
-            (!href.includes("/") || href.includes("english") || href.includes("big5"))
+            !absUrl ||
+            /big5|english|undefined|javascript/.test(absUrl) ||
+            /\.(zip|doc|jpg|jpeg|rar|exe|pdf|png)?$/.test(absUrl)
           ) {
-            return;
+            return null;
           }
-          const absUrl = new URL(href, url).href;
           let x = Object.assign(runner);
           x(absUrl);
           x = null;
         });
       })
-      .catch((e) => {
-        console.log("err", e.message, e.name);
-        fs.appendFileSync(
-          "error.txt",
-          `error--${url}\n${e.message}\n ${url.protocol}\n`
-        );
-        return;
-      });
+      .catch(
+        catchError
+      );
   };
 
   runner(url);
