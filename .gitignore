@@ -1,5 +1,4 @@
 node_modules/
 *.txt
 release/
-dist/
 .DS_Store
