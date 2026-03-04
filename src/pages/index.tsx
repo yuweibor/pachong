@@ -4,9 +4,6 @@ import './index.less';
 
 const App = () => {
   return (
-    <div className="app-container">
-      爬虫 是
-    </div>
   );
 };
 

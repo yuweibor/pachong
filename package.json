@@ -49,17 +49,20 @@
   },
   "homepage": "https://github.com/yuweibor/pachong#readme",
   "dependencies": {
+    "@ant-design/icons": "^6.1.0",
     "antd": "^6.3.1",
     "axios": "^0.27.2",
     "cheerio": "^1.0.0-rc.11",
     "crawler": "^1.4.0",
     "moment": "^2.29.3",
     "react": "^19.2.4",
-    "react-dom": "^19.2.4"
+    "react-dom": "^19.2.4",
+    "react-router-dom": "^6.30.3"
   },
   "devDependencies": {
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
+    "@types/react-router-dom": "^5.3.3",
     "concurrently": "^8.2.2",
     "cross-env": "^7.0.3",
     "css-loader": "^7.1.4",
