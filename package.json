@@ -2,9 +2,41 @@
   "name": "pachong",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "main.js",
   "scripts": {
-    "start": "node index --max-old-space-size=40960"
+    "start": "npm run dev",
+    "dev": "concurrently \"npm run webpack:serve\" \"npm run electron:dev\"",
+    "webpack:serve": "webpack serve",
+    "electron:dev": "wait-on http://localhost:3000 && cross-env NODE_ENV=development electron .",
+    "build": "webpack",
+    "dist": "webpack && electron-builder",
+    "dist-mac": "webpack && electron-builder --mac",
+    "dist-win": "webpack && electron-builder --win",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "build": {
+    "appId": "com.pachong.app",
+    "productName": "PachongApp",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/**/*",
+      "main.js",
+      "package.json"
+    ],
+    "mac": {
+      "target": [
+        "dmg",
+        "zip"
+      ]
+    },
+    "win": {
+      "target": [
+        "nsis",
+        "zip"
+      ]
+    }
   },
   "repository": {
     "type": "git",
@@ -20,6 +52,28 @@
     "axios": "^0.27.2",
     "cheerio": "^1.0.0-rc.11",
     "crawler": "^1.4.0",
-    "moment": "^2.29.3"
+    "moment": "^2.29.3",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "concurrently": "^8.2.2",
+    "cross-env": "^7.0.3",
+    "css-loader": "^7.1.4",
+    "electron": "^28.0.0",
+    "electron-builder": "^26.8.1",
+    "electron-reloader": "^1.2.3",
+    "html-webpack-plugin": "^5.6.6",
+    "less": "^4.5.1",
+    "less-loader": "^12.3.1",
+    "style-loader": "^4.0.0",
+    "ts-loader": "^9.5.4",
+    "typescript": "^5.9.3",
+    "wait-on": "^7.2.0",
+    "webpack": "^5.105.3",
+    "webpack-cli": "^6.0.1",
+    "webpack-dev-server": "^5.2.3"
   }
 }
