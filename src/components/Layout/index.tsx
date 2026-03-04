@@ -11,7 +11,7 @@ const AppLayout = () => {
 
   const menuItems = [
     { key: '/list', icon: <LineChartOutlined />, label: '爬虫列表' },
-    { key: '/settings', icon: <SettingOutlined />, label: '爬虫设置' },
+    { key: '/settings', icon: <SettingOutlined />, label: '开始爬虫' },
     { key: '/runner', icon: <PlayCircleOutlined />, label: '爬虫运行' },
   ];
 

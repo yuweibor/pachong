@@ -1,10 +1,24 @@
 <!DOCTYPE html>
-<html>
+<html >
   <head>
     <meta charset="UTF-8" />
-    <title>Electron React App</title>
   </head>
   <body>
     <div id="root"></div>
   </body>
+  <script type="text/javascript">
+    (function(){
+      // 判断是否为本地开发环境
+      // 1. 检查是否在 Webpack Dev Server (localhost:3000)
+      // 2. 检查环境变量 NODE_ENV
+      const isLocal = window.location.hostname === 'localhost' || 
+                      window.location.port === '3000' ||
+                      (window.process && window.process.env && window.process.env.NODE_ENV === 'development');
+      
+      // 如果不是本地环境且当前不在 dist 目录下，则跳转到构建后的 dist 目录
+      if (!isLocal && !window.location.href.includes('/dist/')) {
+        window.location.href = './dist/index.html';
+      }
+    })()
+  </script>
 </html>
