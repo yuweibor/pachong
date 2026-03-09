@@ -10,10 +10,8 @@ const AppLayout = () => {
   const navigate = useNavigate();
 
   const menuItems = [
-    { key: '/list', icon: <LineChartOutlined />, label: '爬虫列表' },
-    { key: '/settings', icon: <SettingOutlined />, label: '开始爬虫' },
-    { key: '/runner', icon: <PlayCircleOutlined />, label: '爬虫运行' },
-  ];
+    { key: '/list', icon: <LineChartOutlined />, label: '列表' },
+    { key: '/settings', icon: <SettingOutlined />, label: '配置' },  ];
 
   return (
     <Layout style={{ minHeight: '100vh' }}>

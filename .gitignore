@@ -1,4 +1,6 @@
 node_modules/
 *.txt
-release/
+release/*
 .DS_Store
+cache/*
+configs/*

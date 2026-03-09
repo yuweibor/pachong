@@ -1,5 +1,6 @@
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
+const { pachong } = require('./src/services/pachong.js');
 
 // 热重载配置
 if (process.env.NODE_ENV === 'development') {
@@ -16,8 +17,9 @@ const createWindow = () => {
     width: 800,
     height: 600,
     webPreferences: {
-      nodeIntegration: true,
-      contextIsolation: false
+      preload: path.join(__dirname, 'preload.js'),
+      contextIsolation: true, // 推荐开启
+      nodeIntegration: false, // 推荐关闭
     }
   })
 
@@ -31,7 +33,22 @@ const createWindow = () => {
 }
 
 app.whenReady().then(() => {
-  createWindow()
+  // 设置 IPC 监听
+  ipcMain.handle('run-pachong', (event, options) => {
+    const win = BrowserWindow.fromWebContents(event.sender);
+    pachong.run(win, options);
+  });
+
+  ipcMain.handle('stop-pachong', (event) => {
+    const win = BrowserWindow.fromWebContents(event.sender);
+    pachong.stop(win);
+  });
+
+  ipcMain.handle('save-config', (event, options) => {
+    return pachong.saveConfig(options);
+  });
+
+  createWindow();
 
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {

@@ -1,15 +1,44 @@
 import React from 'react';
-import { Form, Input, InputNumber, Button, Select, Space, DatePicker } from 'antd';
+import { Form, Input, InputNumber, Button, Select, Space, DatePicker, Modal } from 'antd';
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import moment from 'moment';
+import { pachongApi } from '@/api';
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
 
+
+
+
+import { useNavigate } from 'react-router-dom';
+
 const Settings = () => {
   const [form] = Form.useForm();
+  const navigate = useNavigate();
+
+  const runPachong = async (values: any) => {
+    try {
+      const filePath = await pachongApi.saveConfig(values);
+      console.log('配置文件已保存到:', filePath);
+      
+      await pachongApi.run(values);
+      
+      // 跳转到 Runner 页面，并传递任务名称
+      navigate('/runner', { state: { taskName: values.name } });
+
+    } catch (error) {
+      console.error('调用主进程失败:', error);
+      Modal.error({ title: '任务启动失败', content: '无法连接到主进程，请检查控制台输出。' });
+    }
+  };
+
   const onFinish = (values: any) => {
     console.log('Form Submitted:', values);
+    Modal.confirm({
+      title: '开始新的爬虫任务？',
+      content: '确认后将在后台开始执行爬虫。',
+      onOk: () => runPachong(values),
+    });
   };
 
   const initialValues = {

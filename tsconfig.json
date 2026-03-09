@@ -12,6 +12,7 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "baseUrl": ".",
+    "outDir": "dist_ts",
     "paths": {
       "@/*": ["src/*"]
     }

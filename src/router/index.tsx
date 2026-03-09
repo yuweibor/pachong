@@ -5,7 +5,6 @@ import AppLayout from '@/components/Layout';
 
 const Settings = React.lazy(() => import('@/pages/Settings'));
 const Runner = React.lazy(() => import('@/pages/Runner'));
-const Results = React.lazy(() => import('@/pages/Results'));
 const List = React.lazy(() => import('@/pages/List'));
 
 const AppRouter = () => {
@@ -23,7 +22,6 @@ const AppRouter = () => {
             <Route index path="list" element={<List />} />
             <Route path="settings" element={<Settings />} />
             <Route path="runner" element={<Runner />} />
-            <Route path="results" element={<Results />} />
           </Route>
         </Routes>
       </Suspense>
